@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "amd",
+    "outFile": "../dist/index.js",
+    "lib": ["dom", "es2015"],
+    "removeComments": true 
+  }, "files": [
+    "./index.ts"
+  ]
+}

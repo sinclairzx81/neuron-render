@@ -1,0 +1,22 @@
+{
+  "name": "project-name",
+  "version": "1.0.0",
+  "description": "project-name",
+  "scripts": {
+    "clean": "node tasks clean",
+    "build": "node tasks build",
+    "start": "node tasks start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sinclairzx81/project-name"
+  },
+  "author": "sinclairzx81",
+  "license": "MIT",
+  "devDependencies": {
+    "fsweb": "^0.8.6",
+    "shx": "^0.2.2",
+    "typescript": "^2.4.2",
+    "typescript-bundle": "^0.8.6"
+  }
+}

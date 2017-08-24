@@ -1,6 +1,6 @@
 ### neuron-render
 
-An experiment using neural networks to approximate various stages of graphics pipeline for the purpose of creating interesting things.
+An experiment using neural networks to approximate various stages of graphics pipeline for the purpose of creating interesting things. [demo](https://sinclairzx81.github.io/neuron-render/)
 
 ### overview
 

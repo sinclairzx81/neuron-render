@@ -40,7 +40,6 @@ const TYPESCRIPT_SRC = "tsc-bundle --project ./src/tsconfig.json"
 //  tasks:
 //------------------------------------------------------
 const clean = async () => {
-  await shell("shx rm -rf ./dist/index.js")
   await shell("shx rm -rf ./node_modules")
 }
 

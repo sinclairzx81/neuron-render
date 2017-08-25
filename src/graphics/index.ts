@@ -26,16 +26,14 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import { Device }                 from "./device"
 import { Camera }                 from "./camera"
-import { Geometry, CubeGeometry } from "./geom"
 import { Mesh }                   from "./mesh"
 import { Renderer }               from "./renderer"
+import { Geometry, CubeGeometry, WaveFrontGeometry } from "./geometry"
 
 export {
-  Device,
   Camera,
-  Geometry, CubeGeometry,
   Mesh,
-  Renderer
+  Renderer,
+  Geometry, CubeGeometry, WaveFrontGeometry,
 }

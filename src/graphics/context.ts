@@ -26,46 +26,43 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import { Vector2 } from "../math/index"
-
 /**
- * Line:
+ * Triangle:
  * 
- * internal representation of a line.
+ * internal representation of a triangle.
  */
-export type Line = {
-  from  : [number, number],
-  to    : [number, number],
-  color : string,
-  width : number
+export type Triangle = {
+  a: ArrayLike<number>,
+  b: ArrayLike<number>,
+  c: ArrayLike<number>,
+  color: string
 }
-
 /**
  * Device
  * 
  * low level line drawing device. Used by the renderer to 
  * render rasterlized lines to the frame.
  */
-export class Device {
-  private context   : CanvasRenderingContext2D
-  private linebuf   : Array<Line>
-  private linecount : number
+export class Context {
+  private context : CanvasRenderingContext2D
+  private tribuf  : Array<Triangle>
+  private tricount: number
 
   /**
    * creates a new canvas rendering device.
    * @param {HTMLCanvasElement} canvas the html canvas element
-   * @returns {Device}
+   * @returns {Context}
    */
   constructor(private canvas: HTMLCanvasElement) {
-    this.context = this.canvas.getContext("2d")
-    this.linecount = 0
-    this.linebuf = new Array(300000)
-    for(let i = 0; i < this.linebuf.length; i++) {
-      this.linebuf[i] = {
-        from  : [0, 0],
-        to    : [0, 0],
-        color : "black",
-        width : 1
+    this.context  = this.canvas.getContext("2d")
+    this.tricount = 0
+    this.tribuf   = new Array(100000)
+    for (let i = 0; i < this.tribuf.length; i++) {
+      this.tribuf[i] = {
+        a    : [0, 0],
+        b    : [0, 0],
+        c    : [0, 0],
+        color: "white"
       }
     }
   }
@@ -98,20 +95,17 @@ export class Device {
 
   /**
    * queues a line to be drawn.
-   * @param {Vector2} from the from position of this line.
-   * @param {Vector2} to the to position of this line.
-   * @param {string} color the color of this line (defaults to blach)
+   * @param {[number, number]} a the a 2-component position of triangle.
+   * @param {[number, number]} b the b 2-component position of triangle.
+   * @param {[number, number]} c the c 2-component position of triangle.
+   * @param {string} color the color of this line (defaults to black)
    * @param {number} width the width of the line (defaults to 1.0)
    * @returns {void}
    */
-  public line(from: Vector2, to: Vector2, color: string = "#000000", width: number = 1.0) {
-    if(this.linecount === this.linebuf.length) return // ignored
-    this.linebuf[this.linecount] = {
-      from : [from.v[0], from.v[1]],
-      to   : [to.v  [0], to.v  [1]],
-      color: color,
-      width: width
-    }; this.linecount += 1
+  public triangle(a: ArrayLike<number>, b:  ArrayLike<number>, c:  ArrayLike<number>, color: string = "#000000", width: number = 1.0) {
+    if (this.tricount === this.tribuf.length) return // ignored
+    this.tribuf[this.tricount] = { a: a,  b: b, c: c, color: color }; 
+    this.tricount += 1
   }
 
   /**
@@ -119,20 +113,47 @@ export class Device {
    * @returns {void}
    */
   public present() {
+    // triangle drawing path
     this.context.beginPath()
-    for(let i = 0; i < this.linecount; i++) {
-      const from = this.linebuf[i].from
-      const to   = this.linebuf[i].to
-      this.context.moveTo(from[0], from[1])
-      this.context.lineTo(to[0],   to[1])
-      
+    for(let i = 0; i < this.tricount; i++) {
+      const a = this.tribuf[i].a
+      const b = this.tribuf[i].b
+      const c = this.tribuf[i].c
+      this.context.moveTo(a[0], a[1])
+      this.context.lineTo(b[0], b[1])
+      this.context.lineTo(c[0], c[1])
+    }
+    this.context.fillStyle = "#BBB"
+    this.context.fill()
+
+    // line drawing path
+    this.context.beginPath()
+    for (let i = 0; i < this.tricount; i++) {
+      const a = this.tribuf[i].a
+      const b = this.tribuf[i].b
+      const c = this.tribuf[i].c
+      this.context.strokeStyle = "#F00"
+      this.context.moveTo(a[0], a[1])
+      this.context.lineTo(b[0], b[1])
+      this.context.strokeStyle = "#0F0"
+      this.context.moveTo(b[0], b[1])
+      this.context.lineTo(c[0], c[1])
+      this.context.strokeStyle = "#00F"
+      this.context.moveTo(c[0], c[1])
+      this.context.lineTo(a[0], a[1])
     }
     this.context.strokeStyle = "#000"
     this.context.stroke()
-    this.linecount = 0
+    this.tricount = 0
   }
 
-  public discard():void{
-    this.linecount = 0
+  /**
+   * discards drawing buffers. used primary
+   * for training the pipeline via rendering,
+   * ignored in the general case.
+   * @returns {void}
+   */
+  public discard(): void {
+    this.tricount  = 0
   }
 }

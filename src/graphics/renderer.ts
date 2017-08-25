@@ -27,9 +27,9 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 import { Matrix, Vector4, Vector2 } from "../math/index"
-import { Device } from "./device"
-import { Camera } from "./camera"
-import { Mesh }   from "./mesh"
+import { Context } from "./context"
+import { Camera  } from "./camera"
+import { Mesh    } from "./mesh"
 
 //--------------------------------------------------------------
 // begin: graphics pipeline stuff
@@ -76,47 +76,29 @@ const clipspace = (width: number, height: number, vector: Vector4): Vector2 => {
   )
 }
 
-
-
-/**
- * renders a mesh with the given device and camera.
- * @param {Device} device the line drawing device.
- * @param {Camera} camera the camera.
- * @param {Mesh} mesh the mesh to render.
- * @returns {void}
- */
-const render = (device: Device, camera: Camera, mesh: Mesh): void => {
-  for(let i = 0; i < mesh.geometry.indices.length; i+= 3) {
-    const v0 = mesh.geometry.positions[mesh.geometry.indices[i+0]]
-    const v1 = mesh.geometry.positions[mesh.geometry.indices[i+1]]
-    const v2 = mesh.geometry.positions[mesh.geometry.indices[i+2]]
-    const vs0 = vertexshader(mesh.model, camera.view, camera.projection, v0)
-    const vs1 = vertexshader(mesh.model, camera.view, camera.projection, v1)
-    const vs2 = vertexshader(mesh.model, camera.view, camera.projection, v2)
-    const cs0 = clipspace(device.width(), device.height(), vs0)
-    const cs1 = clipspace(device.width(), device.height(), vs1)
-    const cs2 = clipspace(device.width(), device.height(), vs2)
-    device.line(cs0, cs1)
-    device.line(cs1, cs2)
-    device.line(cs2, cs0)
-  }
-}
-
 //--------------------------------------------------------------
 // end: graphics pipeline stuff
 //--------------------------------------------------------------
+
+/**
+ * Renderer Override Functions
+ * 
+ * The following functions can be overridden on the renderer, allowing the caller
+ * to implement their own stages. By default the renderer binds the functions 
+ * above as reasonable defaults.
+ */
 export type RendererVertexShaderFunction = (model: Matrix, view: Matrix, projection: Matrix, vector: Vector4) => Vector4
 export type RendererClipSpaceFunction    = (width: number, height: number, vector: Vector4) => Vector2
 
 /**
  * Renderer
  * 
- * Simple wireframe renderer
+ * Simple wireframe renderer, emulates a very basic vertex transform 
+ * pipeline.
  */
 export class Renderer {
 
-  private device: Device
-  
+  private context         : Context
   private vertexshaderfunc: RendererVertexShaderFunction
   private clipspacefunc   : RendererClipSpaceFunction
 
@@ -126,7 +108,7 @@ export class Renderer {
    * @returns {Renderer}
    */
   constructor(private canvas: HTMLCanvasElement) {
-    this.device = new Device(canvas)
+    this.context          = new Context(canvas)
     this.vertexshaderfunc = vertexshader
     this.clipspacefunc    = clipspace
   }
@@ -155,7 +137,7 @@ export class Renderer {
    * @returns {void}
    */
   public clear(color: string): void {
-    this.device.clear(color)
+    this.context.clear(color)
   }
 
   /**
@@ -169,16 +151,22 @@ export class Renderer {
       const v0 = mesh.geometry.positions[mesh.geometry.indices[i+0]]
       const v1 = mesh.geometry.positions[mesh.geometry.indices[i+1]]
       const v2 = mesh.geometry.positions[mesh.geometry.indices[i+2]]
-      const vs0 = vertexshader(mesh.model, camera.view, camera.projection, v0)
-      const vs1 = vertexshader(mesh.model, camera.view, camera.projection, v1)
-      const vs2 = vertexshader(mesh.model, camera.view, camera.projection, v2)
-      const cs0 = this.clipspacefunc(this.device.width(), this.device.height(), vs0)
-      const cs1 = this.clipspacefunc(this.device.width(), this.device.height(), vs1)
-      const cs2 = this.clipspacefunc(this.device.width(), this.device.height(), vs2)
+
+      // process this triangles vertices with the mesh, view and projection.
+      const vs0 = this.vertexshaderfunc(mesh.matrix, camera.view, camera.projection, v0)
+      const vs1 = this.vertexshaderfunc(mesh.matrix, camera.view, camera.projection, v1)
+      const vs2 = this.vertexshaderfunc(mesh.matrix, camera.view, camera.projection, v2)
+      
+      // project this triangle into clipspace.
+      const cs0 = this.clipspacefunc(this.context.width(), this.context.height(), vs0)
+      const cs1 = this.clipspacefunc(this.context.width(), this.context.height(), vs1)
+      const cs2 = this.clipspacefunc(this.context.width(), this.context.height(), vs2)
       if(visible(cs0, cs1, cs2)) {
-        this.device.line(cs0, cs1)
-        this.device.line(cs1, cs2)
-        this.device.line(cs2, cs0)
+        this.context.triangle(
+          cs0.v, 
+          cs1.v, 
+          cs2.v
+        )
       }
     }
   }
@@ -188,13 +176,13 @@ export class Renderer {
    * @returns {void}
    */
   public present(): void {
-    this.device.present()
+    this.context.present()
   }
 
   /**
    * discards the draw call.
    */
   public discard(): void {
-    this.device.discard()
+    this.context.discard()
   }
 }

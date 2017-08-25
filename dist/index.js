@@ -45,41 +45,16 @@
         : undefined
   }
 
-  var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-      return new (P || (P = Promise))(function (resolve, reject) {
-          function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-          function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-          function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-          step((generator = generator.apply(thisArg, _arguments || [])).next());
-      });
-  };
-  var __generator = (this && this.__generator) || function (thisArg, body) {
-      var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-      return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-      function verb(n) { return function (v) { return step([n, v]); }; }
-      function step(op) {
-          if (f) throw new TypeError("Generator is already executing.");
-          while (_) try {
-              if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-              if (y = 0, t) op = [0, t.value];
-              switch (op[0]) {
-                  case 0: case 1: t = op; break;
-                  case 4: _.label++; return { value: op[1], done: false };
-                  case 5: _.label++; y = op[1]; op = [0]; continue;
-                  case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                  default:
-                      if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                      if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                      if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                      if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                      if (t[2]) _.ops.pop();
-                      _.trys.pop(); continue;
-              }
-              op = body.call(thisArg, _);
-          } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-          if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-      }
-  };
+  var __extends = (this && this.__extends) || (function () {
+      var extendStatics = Object.setPrototypeOf ||
+          ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+          function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+      return function (d, b) {
+          extendStatics(d, b);
+          function __() { this.constructor = d; }
+          d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+  })();
   define("math/radian", ["require", "exports"], function (require, exports) {
       "use strict";
       exports.__esModule = true;
@@ -2941,67 +2916,6 @@
       exports.Sphere = sphere_1.Sphere;
       exports.Frustum = frustum_1.Frustum;
   });
-  define("graphics/device", ["require", "exports"], function (require, exports) {
-      "use strict";
-      exports.__esModule = true;
-      var Device = (function () {
-          function Device(canvas) {
-              this.canvas = canvas;
-              this.context = this.canvas.getContext("2d");
-              this.linecount = 0;
-              this.linebuf = new Array(300000);
-              for (var i = 0; i < this.linebuf.length; i++) {
-                  this.linebuf[i] = {
-                      from: [0, 0],
-                      to: [0, 0],
-                      color: "black",
-                      width: 1
-                  };
-              }
-          }
-          Device.prototype.width = function () {
-              return this.canvas.width;
-          };
-          Device.prototype.height = function () {
-              return this.canvas.height;
-          };
-          Device.prototype.clear = function (color) {
-              if (color === void 0) { color = "#FFFFFF"; }
-              this.context.fillStyle = color;
-              this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-          };
-          Device.prototype.line = function (from, to, color, width) {
-              if (color === void 0) { color = "#000000"; }
-              if (width === void 0) { width = 1.0; }
-              if (this.linecount === this.linebuf.length)
-                  return;
-              this.linebuf[this.linecount] = {
-                  from: [from.v[0], from.v[1]],
-                  to: [to.v[0], to.v[1]],
-                  color: color,
-                  width: width
-              };
-              this.linecount += 1;
-          };
-          Device.prototype.present = function () {
-              this.context.beginPath();
-              for (var i = 0; i < this.linecount; i++) {
-                  var from = this.linebuf[i].from;
-                  var to = this.linebuf[i].to;
-                  this.context.moveTo(from[0], from[1]);
-                  this.context.lineTo(to[0], to[1]);
-              }
-              this.context.strokeStyle = "#000";
-              this.context.stroke();
-              this.linecount = 0;
-          };
-          Device.prototype.discard = function () {
-              this.linecount = 0;
-          };
-          return Device;
-      }());
-      exports.Device = Device;
-  });
   define("graphics/camera", ["require", "exports", "math/index"], function (require, exports, index_1) {
       "use strict";
       exports.__esModule = true;
@@ -3014,7 +2928,7 @@
       }());
       exports.Camera = Camera;
   });
-  define("graphics/geom", ["require", "exports", "math/index"], function (require, exports, index_2) {
+  define("graphics/geometry", ["require", "exports", "math/index"], function (require, exports, index_2) {
       "use strict";
       exports.__esModule = true;
       var CubeGeometry = (function () {
@@ -3057,6 +2971,93 @@
           return CubeGeometry;
       }());
       exports.CubeGeometry = CubeGeometry;
+      var WaveFrontGeometry = (function (_super) {
+          __extends(WaveFrontGeometry, _super);
+          function WaveFrontGeometry(filename) {
+              var _this = _super.call(this, 1.0) || this;
+              _this.filename = filename;
+              _this.load(_this.filename)["catch"](console.log);
+              return _this;
+          }
+          WaveFrontGeometry.prototype.load = function (filename) {
+              var _this = this;
+              return fetch(filename).then(function (res) { return res.text(); }).then(function (text) {
+                  var rows = text.split("\n").map(function (line) { return line.split(" ").filter(function (n) { return n.length > 0; }); });
+                  var vertexCount = 0;
+                  var faceCount = 0;
+                  var faceMode = "tri";
+                  var firstFace = true;
+                  for (var i = 0; i < rows.length; i++) {
+                      var row = rows[i];
+                      switch (row[0]) {
+                          case "v": {
+                              vertexCount += 1;
+                              break;
+                          }
+                          case "f": {
+                              if (firstFace) {
+                                  firstFace = false;
+                                  if (row.length === 4) {
+                                      faceMode = "tri";
+                                  }
+                                  else if (row.length === 5) {
+                                      faceMode = "quad";
+                                  }
+                              }
+                              faceCount += 1;
+                              break;
+                          }
+                      }
+                  }
+                  var indexCount = (faceMode === "quad")
+                      ? (faceCount * 6)
+                      : (faceCount * 3);
+                  var positions = new Array(vertexCount);
+                  var indices = new Array(indexCount);
+                  var positionIndex = 0;
+                  var indicesIndex = 0;
+                  for (var i = 0; i < rows.length; i++) {
+                      var line = rows[i];
+                      switch (line[0]) {
+                          case "v":
+                              positions[positionIndex] = new index_2.Vector4(parseFloat(line[1]), parseFloat(line[2]), parseFloat(line[3]), 1.0);
+                              positionIndex += 1;
+                              break;
+                          case "f":
+                              {
+                                  if (faceMode === "tri") {
+                                      var a = parseInt(line[1].split("/")[0]) - 1;
+                                      var b = parseInt(line[2].split("/")[0]) - 1;
+                                      var c = parseInt(line[3].split("/")[0]) - 1;
+                                      indices[indicesIndex + 0] = a;
+                                      indices[indicesIndex + 1] = b;
+                                      indices[indicesIndex + 2] = c;
+                                      indicesIndex += 3;
+                                  }
+                                  else if (faceMode === "quad") {
+                                      var a = parseInt(line[1].split("/")[0]) - 1;
+                                      var b = parseInt(line[2].split("/")[0]) - 1;
+                                      var c = parseInt(line[3].split("/")[0]) - 1;
+                                      var d = parseInt(line[4].split("/")[0]) - 1;
+                                      indices[indicesIndex + 0] = a;
+                                      indices[indicesIndex + 1] = b;
+                                      indices[indicesIndex + 2] = c;
+                                      indices[indicesIndex + 3] = c;
+                                      indices[indicesIndex + 4] = d;
+                                      indices[indicesIndex + 5] = a;
+                                      indicesIndex += 6;
+                                  }
+                              }
+                              break;
+                      }
+                  }
+                  _this.positions = positions;
+                  _this.indices = indices;
+              });
+          };
+          return WaveFrontGeometry;
+      }(CubeGeometry));
+      exports.WaveFrontGeometry = WaveFrontGeometry;
   });
   define("graphics/mesh", ["require", "exports", "math/matrix"], function (require, exports, matrix_4) {
       "use strict";
@@ -3064,13 +3065,88 @@
       var Mesh = (function () {
           function Mesh(geometry) {
               this.geometry = geometry;
-              this.model = matrix_4.Matrix.identity();
+              this.matrix = matrix_4.Matrix.identity();
           }
           return Mesh;
       }());
       exports.Mesh = Mesh;
   });
-  define("graphics/renderer", ["require", "exports", "math/index", "graphics/device"], function (require, exports, index_3, device_1) {
+  define("graphics/context", ["require", "exports"], function (require, exports) {
+      "use strict";
+      exports.__esModule = true;
+      var Context = (function () {
+          function Context(canvas) {
+              this.canvas = canvas;
+              this.context = this.canvas.getContext("2d");
+              this.tricount = 0;
+              this.tribuf = new Array(100000);
+              for (var i = 0; i < this.tribuf.length; i++) {
+                  this.tribuf[i] = {
+                      a: [0, 0],
+                      b: [0, 0],
+                      c: [0, 0],
+                      color: "white"
+                  };
+              }
+          }
+          Context.prototype.width = function () {
+              return this.canvas.width;
+          };
+          Context.prototype.height = function () {
+              return this.canvas.height;
+          };
+          Context.prototype.clear = function (color) {
+              if (color === void 0) { color = "#FFFFFF"; }
+              this.context.fillStyle = color;
+              this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+          };
+          Context.prototype.triangle = function (a, b, c, color, width) {
+              if (color === void 0) { color = "#000000"; }
+              if (width === void 0) { width = 1.0; }
+              if (this.tricount === this.tribuf.length)
+                  return;
+              this.tribuf[this.tricount] = { a: a, b: b, c: c, color: color };
+              this.tricount += 1;
+          };
+          Context.prototype.present = function () {
+              this.context.beginPath();
+              for (var i = 0; i < this.tricount; i++) {
+                  var a = this.tribuf[i].a;
+                  var b = this.tribuf[i].b;
+                  var c = this.tribuf[i].c;
+                  this.context.moveTo(a[0], a[1]);
+                  this.context.lineTo(b[0], b[1]);
+                  this.context.lineTo(c[0], c[1]);
+              }
+              this.context.fillStyle = "#BBB";
+              this.context.fill();
+              this.context.beginPath();
+              for (var i = 0; i < this.tricount; i++) {
+                  var a = this.tribuf[i].a;
+                  var b = this.tribuf[i].b;
+                  var c = this.tribuf[i].c;
+                  this.context.strokeStyle = "#F00";
+                  this.context.moveTo(a[0], a[1]);
+                  this.context.lineTo(b[0], b[1]);
+                  this.context.strokeStyle = "#0F0";
+                  this.context.moveTo(b[0], b[1]);
+                  this.context.lineTo(c[0], c[1]);
+                  this.context.strokeStyle = "#00F";
+                  this.context.moveTo(c[0], c[1]);
+                  this.context.lineTo(a[0], a[1]);
+              }
+              this.context.strokeStyle = "#000";
+              this.context.stroke();
+              this.tricount = 0;
+          };
+          Context.prototype.discard = function () {
+              this.tricount = 0;
+          };
+          return Context;
+      }());
+      exports.Context = Context;
+  });
+  define("graphics/renderer", ["require", "exports", "math/index", "graphics/context"], function (require, exports, index_3, context_1) {
       "use strict";
       exports.__esModule = true;
       var visible = function (v0, v1, v2) {
@@ -3088,26 +3164,10 @@
       var clipspace = function (width, height, vector) {
           return new index_3.Vector2(((vector.v[0] / vector.v[3]) * width) + (width / 2), ((vector.v[1] / vector.v[3]) * height) + (height / 2));
       };
-      var render = function (device, camera, mesh) {
-          for (var i = 0; i < mesh.geometry.indices.length; i += 3) {
-              var v0 = mesh.geometry.positions[mesh.geometry.indices[i + 0]];
-              var v1 = mesh.geometry.positions[mesh.geometry.indices[i + 1]];
-              var v2 = mesh.geometry.positions[mesh.geometry.indices[i + 2]];
-              var vs0 = vertexshader(mesh.model, camera.view, camera.projection, v0);
-              var vs1 = vertexshader(mesh.model, camera.view, camera.projection, v1);
-              var vs2 = vertexshader(mesh.model, camera.view, camera.projection, v2);
-              var cs0 = clipspace(device.width(), device.height(), vs0);
-              var cs1 = clipspace(device.width(), device.height(), vs1);
-              var cs2 = clipspace(device.width(), device.height(), vs2);
-              device.line(cs0, cs1);
-              device.line(cs1, cs2);
-              device.line(cs2, cs0);
-          }
-      };
       var Renderer = (function () {
           function Renderer(canvas) {
               this.canvas = canvas;
-              this.device = new device_1.Device(canvas);
+              this.context = new context_1.Context(canvas);
               this.vertexshaderfunc = vertexshader;
               this.clipspacefunc = clipspace;
           }
@@ -3118,44 +3178,42 @@
               this.clipspacefunc = func;
           };
           Renderer.prototype.clear = function (color) {
-              this.device.clear(color);
+              this.context.clear(color);
           };
           Renderer.prototype.render = function (camera, mesh) {
               for (var i = 0; i < mesh.geometry.indices.length; i += 3) {
                   var v0 = mesh.geometry.positions[mesh.geometry.indices[i + 0]];
                   var v1 = mesh.geometry.positions[mesh.geometry.indices[i + 1]];
                   var v2 = mesh.geometry.positions[mesh.geometry.indices[i + 2]];
-                  var vs0 = vertexshader(mesh.model, camera.view, camera.projection, v0);
-                  var vs1 = vertexshader(mesh.model, camera.view, camera.projection, v1);
-                  var vs2 = vertexshader(mesh.model, camera.view, camera.projection, v2);
-                  var cs0 = this.clipspacefunc(this.device.width(), this.device.height(), vs0);
-                  var cs1 = this.clipspacefunc(this.device.width(), this.device.height(), vs1);
-                  var cs2 = this.clipspacefunc(this.device.width(), this.device.height(), vs2);
+                  var vs0 = this.vertexshaderfunc(mesh.matrix, camera.view, camera.projection, v0);
+                  var vs1 = this.vertexshaderfunc(mesh.matrix, camera.view, camera.projection, v1);
+                  var vs2 = this.vertexshaderfunc(mesh.matrix, camera.view, camera.projection, v2);
+                  var cs0 = this.clipspacefunc(this.context.width(), this.context.height(), vs0);
+                  var cs1 = this.clipspacefunc(this.context.width(), this.context.height(), vs1);
+                  var cs2 = this.clipspacefunc(this.context.width(), this.context.height(), vs2);
                   if (visible(cs0, cs1, cs2)) {
-                      this.device.line(cs0, cs1);
-                      this.device.line(cs1, cs2);
-                      this.device.line(cs2, cs0);
+                      this.context.triangle(cs0.v, cs1.v, cs2.v);
                   }
               }
           };
           Renderer.prototype.present = function () {
-              this.device.present();
+              this.context.present();
           };
           Renderer.prototype.discard = function () {
-              this.device.discard();
+              this.context.discard();
           };
           return Renderer;
       }());
       exports.Renderer = Renderer;
   });
-  define("graphics/index", ["require", "exports", "graphics/device", "graphics/camera", "graphics/geom", "graphics/mesh", "graphics/renderer"], function (require, exports, device_2, camera_1, geom_1, mesh_1, renderer_1) {
+  define("graphics/index", ["require", "exports", "graphics/camera", "graphics/mesh", "graphics/renderer", "graphics/geometry"], function (require, exports, camera_1, mesh_1, renderer_1, geometry_1) {
       "use strict";
       exports.__esModule = true;
-      exports.Device = device_2.Device;
       exports.Camera = camera_1.Camera;
-      exports.CubeGeometry = geom_1.CubeGeometry;
       exports.Mesh = mesh_1.Mesh;
       exports.Renderer = renderer_1.Renderer;
+      exports.CubeGeometry = geometry_1.CubeGeometry;
+      exports.WaveFrontGeometry = geometry_1.WaveFrontGeometry;
   });
   define("network/matrix", ["require", "exports"], function (require, exports) {
       "use strict";
@@ -3386,103 +3444,24 @@
       exports.Tensor = tensor_1.Tensor;
       exports.Trainer = trainer_1.Trainer;
   });
-  define("loader/index", ["require", "exports", "math/vector4"], function (require, exports, vector4_2) {
+  define("index", ["require", "exports", "math/index", "graphics/index", "network/index"], function (require, exports, index_4, index_5, index_6) {
       "use strict";
-      exports.__esModule = true;
-      exports.loadObj = function (filename) { return fetch(filename).then(function (response) { return response.text(); }).then(function (text) {
-          var lines = text.split("\n").map(function (line) {
-              return line.split(" ").filter(function (n) { return n.length > 0; });
-          });
-          var vertexCount = 0;
-          var faceCount = 0;
-          var faceMode = "tri";
-          var firstFace = true;
-          for (var i = 0; i < lines.length; i++) {
-              var line = lines[i];
-              switch (line[0]) {
-                  case "v":
-                      vertexCount += 1;
-                      break;
-                  case "f": {
-                      if (firstFace) {
-                          firstFace = false;
-                          if (line.length === 4) {
-                              faceMode = "tri";
-                          }
-                          else if (line.length === 5) {
-                              faceMode = "quad";
-                          }
-                      }
-                      faceCount += 1;
-                      break;
-                  }
-              }
-          }
-          var indexCount = (faceMode === "quad")
-              ? faceCount * 6
-              : faceCount * 3;
-          var positions = new Array(vertexCount);
-          var indices = new Array(indexCount);
-          var positionIndex = 0;
-          var indicesIndex = 0;
-          for (var i = 0; i < lines.length; i++) {
-              var line = lines[i];
-              switch (line[0]) {
-                  case "v":
-                      positions[positionIndex] = new vector4_2.Vector4(parseFloat(line[1]), parseFloat(line[2]), parseFloat(line[3]), 1.0);
-                      positionIndex += 1;
-                      break;
-                  case "f":
-                      {
-                          if (faceMode === "tri") {
-                              var a = parseInt(line[1].split("/")[0]) - 1;
-                              var b = parseInt(line[2].split("/")[0]) - 1;
-                              var c = parseInt(line[3].split("/")[0]) - 1;
-                              indices[indicesIndex + 0] = a;
-                              indices[indicesIndex + 1] = b;
-                              indices[indicesIndex + 2] = c;
-                              indicesIndex += 3;
-                          }
-                          else if (faceMode === "quad") {
-                              var a = parseInt(line[1].split("/")[0]) - 1;
-                              var b = parseInt(line[2].split("/")[0]) - 1;
-                              var c = parseInt(line[3].split("/")[0]) - 1;
-                              var d = parseInt(line[4].split("/")[0]) - 1;
-                              indices[indicesIndex + 0] = a;
-                              indices[indicesIndex + 1] = b;
-                              indices[indicesIndex + 2] = c;
-                              indices[indicesIndex + 3] = c;
-                              indices[indicesIndex + 4] = d;
-                              indices[indicesIndex + 5] = a;
-                              indicesIndex += 6;
-                          }
-                      }
-                      break;
-              }
-          }
-          return {
-              positions: positions,
-              indices: indices
-          };
-      }); };
-  });
-  define("index", ["require", "exports", "math/index", "graphics/index", "network/index", "loader/index"], function (require, exports, index_4, index_5, index_6, index_7) {
-      "use strict";
-      var _this = this;
       exports.__esModule = true;
       var training = false;
       var meshmode = "cube";
-      var toggle = document.getElementById("toggle");
-      var cube = document.getElementById("cube");
-      var bunny = document.getElementById("bunny");
-      cube.onclick = function () { meshmode = "cube"; };
-      bunny.onclick = function () { meshmode = "bunny"; };
-      toggle.onclick = function () {
-          training = !training;
-          toggle.value = training
-              ? "training projection network"
-              : "projecting with network";
-      };
+      {
+          var toggle_1 = document.getElementById("toggle");
+          var cube_1 = document.getElementById("cube");
+          var bunny_1 = document.getElementById("bunny");
+          cube_1.onclick = function () { meshmode = "cube"; };
+          bunny_1.onclick = function () { meshmode = "bunny"; };
+          toggle_1.onclick = function () {
+              training = !training;
+              toggle_1.value = training
+                  ? "training projection network"
+                  : "projecting with network";
+          };
+      }
       var network = new index_6.Trainer(new index_6.Network([
           new index_6.Tensor(4, "tanh"),
           new index_6.Tensor(4, "tanh"),
@@ -3493,7 +3472,7 @@
           step: 0.0015
       });
       var renderer = new index_5.Renderer(document.getElementById("canvas"));
-      var training_function = function (width, height, vector) {
+      var clipspace_training_function = function (width, height, vector) {
           var input = [
               (vector.v[0]),
               (vector.v[1]),
@@ -3506,7 +3485,7 @@
           ]);
           return new index_4.Vector2(0, 0);
       };
-      var approximation_function = function (width, height, vector) {
+      var clipspace_render_function = function (width, height, vector) {
           var input = [
               (vector.v[0]),
               (vector.v[1]),
@@ -3516,44 +3495,25 @@
           var actual = network.forward(input);
           return new index_4.Vector2((actual[0] * width) + (width / 2), (actual[1] * height) + (height / 2));
       };
-      var start = function () { return __awaiter(_this, void 0, void 0, function () {
-          var bunny, _a, cube, _b, camera;
-          return __generator(this, function (_c) {
-              switch (_c.label) {
-                  case 0:
-                      _a = index_5.Mesh.bind;
-                      return [4, index_7.loadObj("./assets/bunny.obj")];
-                  case 1:
-                      bunny = new (_a.apply(index_5.Mesh, [void 0, _c.sent()]))();
-                      _b = index_5.Mesh.bind;
-                      return [4, index_7.loadObj("./assets/cube.obj")];
-                  case 2:
-                      cube = new (_b.apply(index_5.Mesh, [void 0, _c.sent()]))();
-                      bunny.model = bunny.model.rotateZ(180 * (Math.PI / 180));
-                      cube.model = cube.model.rotateZ(180 * (Math.PI / 180));
-                      camera = new index_5.Camera();
-                      camera.view = index_4.Matrix.lookAt(new index_4.Vector3(0, 0, -2.5), new index_4.Vector3(0, 0, 0), new index_4.Vector3(0, 1, 0));
-                      setInterval(function () {
-                          var mesh = meshmode === "cube" ? cube : bunny;
-                          mesh.model = mesh.model
-                              .rotateX(0.01)
-                              .rotateY(0.01)
-                              .rotateZ(0.01);
-                          if (training) {
-                              renderer.clipspace(training_function);
-                              renderer.render(camera, mesh);
-                              renderer.discard();
-                          }
-                          renderer.clipspace(approximation_function);
-                          renderer.clear("#FFF");
-                          renderer.render(camera, mesh);
-                          renderer.present();
-                      }, 1);
-                      return [2];
-              }
-          });
-      }); };
-      start()["catch"](console.log);
+      var bunny = new index_5.Mesh(new index_5.WaveFrontGeometry("./assets/bunny.obj"));
+      var cube = new index_5.Mesh(new index_5.WaveFrontGeometry("./assets/cube.obj"));
+      bunny.matrix = bunny.matrix.rotateZ(180 * (Math.PI / 180));
+      cube.matrix = cube.matrix.rotateZ(180 * (Math.PI / 180));
+      var camera = new index_5.Camera();
+      camera.view = index_4.Matrix.lookAt(new index_4.Vector3(0, 0, -2.5), new index_4.Vector3(0, 0, 0), new index_4.Vector3(0, 1, 0));
+      setInterval(function () {
+          var mesh = meshmode === "cube" ? cube : bunny;
+          mesh.matrix = mesh.matrix.rotateX(0.02).rotateY(0.01);
+          if (training) {
+              renderer.clipspace(clipspace_training_function);
+              renderer.render(camera, mesh);
+              renderer.discard();
+          }
+          renderer.clipspace(clipspace_render_function);
+          renderer.clear("#FFF");
+          renderer.render(camera, mesh);
+          renderer.present();
+      }, 1);
   });
   
   return collect(); 

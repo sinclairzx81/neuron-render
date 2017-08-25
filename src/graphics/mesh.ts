@@ -26,8 +26,8 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import {Matrix} from "../math/matrix"
-import {Geometry} from "./geom"
+import { Matrix   } from "../math/matrix"
+import { Geometry } from "./geometry"
 
 /**
  * Mesh:
@@ -35,9 +35,14 @@ import {Geometry} from "./geom"
  * Container type for meshes.
  */
 export class Mesh {
-  public model: Matrix
-  
+
+  public matrix: Matrix
+  /**
+   * creates a new mesh with the given geometry.
+   * @param {Geometry} geometry the meshes geometry.
+   * @returns {Mesh}
+   */
   constructor(public geometry: Geometry) {
-    this.model = Matrix.identity()
+    this.matrix = Matrix.identity()
   }
 }
